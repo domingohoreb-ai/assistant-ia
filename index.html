@@ -1006,19 +1006,14 @@ async function sendMessage() {
 Tâches actuelles: ${JSON.stringify(state.tasks.slice(0,5))}
 Notes: ${JSON.stringify(state.notes.slice(0,3))}
 Réponds toujours en français, de façon concise et utile.`;
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/.netlify/functions/chat', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': state.apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-calls': 'true'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages: state.messages.slice(-10)
+        messages: state.messages.slice(-10),
+        apiKey: state.apiKey
       })
     });
     removeTyping();
