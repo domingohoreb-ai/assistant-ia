@@ -2,654 +2,311 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0a0a0f">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#080810">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Aria — Assistant IA</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>ARIA — Assistant IA Personnel</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --bg2: #111118;
-    --bg3: #1a1a24;
-    --card: #16161f;
-    --border: #2a2a3a;
-    --accent: #6c63ff;
-    --accent2: #ff6b9d;
-    --accent3: #00d4aa;
-    --text: #f0f0ff;
-    --text2: #9090aa;
-    --text3: #5a5a7a;
-    --success: #00d4aa;
-    --warning: #ffaa00;
-    --danger: #ff4466;
-    --radius: 16px;
-    --radius-sm: 10px;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    max-width: 480px;
-    margin: 0 auto;
-    position: relative;
-    overflow-x: hidden;
-  }
-
-  h1, h2, h3 { font-family: 'Syne', sans-serif; }
-
-  /* SCREENS */
-  .screen { display: none; flex-direction: column; min-height: 100vh; padding-bottom: 80px; }
-  .screen.active { display: flex; }
-
-  /* HEADER */
-  .header {
-    padding: 20px 20px 12px;
-    background: linear-gradient(180deg, var(--bg) 0%, transparent 100%);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    backdrop-filter: blur(20px);
-  }
-
-  .header-top { display: flex; justify-content: space-between; align-items: center; }
-
-  .greeting { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 2px; font-family: 'Syne', sans-serif; }
-
-  .header h2 { font-size: 24px; font-weight: 800; color: var(--text); }
-
-  .avatar {
-    width: 40px; height: 40px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  /* BOTTOM NAV */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 100%; max-width: 480px;
-    background: rgba(10,10,15,0.95);
-    backdrop-filter: blur(30px);
-    border-top: 1px solid var(--border);
-    display: flex;
-    padding: 8px 0 16px;
-    z-index: 100;
-  }
-
-  .nav-item {
-    flex: 1;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 4px;
-    cursor: pointer;
-    padding: 6px 0;
-    color: var(--text3);
-    font-size: 10px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: color 0.2s;
-  }
-
-  .nav-item.active { color: var(--accent); }
-  .nav-item svg { width: 22px; height: 22px; }
-
-  /* CARDS */
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin: 0 16px 12px;
-  }
-
-  .card-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--text3);
-    margin-bottom: 12px;
-  }
-
-  /* HOME SCREEN */
-  .home-hero {
-    margin: 16px 16px 12px;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    border: 1px solid rgba(108,99,255,0.3);
-    border-radius: 20px;
-    padding: 24px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .home-hero::before {
-    content: '';
-    position: absolute;
-    top: -50%; right: -20%;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(108,99,255,0.3) 0%, transparent 70%);
-    border-radius: 50%;
-  }
-
-  .home-hero::after {
-    content: '';
-    position: absolute;
-    bottom: -30%; left: -10%;
-    width: 150px; height: 150px;
-    background: radial-gradient(circle, rgba(255,107,157,0.2) 0%, transparent 70%);
-    border-radius: 50%;
-  }
-
-  .hero-time { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 6px; font-family: 'Syne', sans-serif; letter-spacing: 1px; text-transform: uppercase; }
-
-  .hero-greeting { font-size: 28px; font-weight: 800; color: #fff; line-height: 1.2; position: relative; z-index: 1; }
-
-  .hero-sub { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 8px; position: relative; z-index: 1; }
-
-  .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 16px 12px; }
-
-  .quick-btn {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    cursor: pointer;
-    display: flex; flex-direction: column; gap: 8px;
-    transition: all 0.2s;
-    text-align: left;
-  }
-
-  .quick-btn:active { transform: scale(0.97); }
-
-  .quick-btn.primary { background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(108,99,255,0.05)); border-color: rgba(108,99,255,0.4); }
-
-  .quick-btn-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-
-  .quick-btn-label { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
-
-  .quick-btn-sub { font-size: 11px; color: var(--text3); }
-
-  .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
-
-  .stat-item { text-align: center; }
-  .stat-num { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; }
-  .stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-
-  /* CHAT SCREEN */
-  .chat-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .msg {
-    max-width: 82%;
-    padding: 12px 16px;
-    border-radius: 18px;
-    font-size: 14px;
-    line-height: 1.5;
-    animation: msgIn 0.3s ease;
-  }
-
-  @keyframes msgIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .msg.user {
-    align-self: flex-end;
-    background: linear-gradient(135deg, var(--accent), #8b5cf6);
-    color: #fff;
-    border-bottom-right-radius: 4px;
-  }
-
-  .msg.aria {
-    align-self: flex-start;
-    background: var(--card);
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-bottom-left-radius: 4px;
-  }
-
-  .msg-time { font-size: 10px; opacity: 0.5; margin-top: 4px; }
-
-  .chat-input-area {
-    position: sticky;
-    bottom: 80px;
-    background: var(--bg);
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-  }
-
-  .chat-input {
-    flex: 1;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 12px 18px;
-    color: var(--text);
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    resize: none;
-    max-height: 100px;
-    min-height: 44px;
-    line-height: 1.4;
-  }
-
-  .chat-input:focus { border-color: var(--accent); }
-
-  .chat-input::placeholder { color: var(--text3); }
-
-  .send-btn {
-    width: 44px; height: 44px;
-    background: linear-gradient(135deg, var(--accent), #8b5cf6);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: transform 0.2s;
-  }
-
-  .send-btn:active { transform: scale(0.92); }
-
-  .aria-header {
-    display: flex; align-items: center; gap: 12px;
-    padding: 16px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .aria-avatar {
-    width: 44px; height: 44px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-  }
-
-  .aria-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--success); }
-  .status-dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
-
-  .typing { display: flex; gap: 4px; align-items: center; padding: 8px; }
-  .typing span { width: 7px; height: 7px; background: var(--text3); border-radius: 50%; animation: typing 1.4s infinite; }
-  .typing span:nth-child(2) { animation-delay: 0.2s; }
-  .typing span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes typing { 0%,60%,100%{ transform:translateY(0); } 30%{ transform:translateY(-8px); } }
-
-  /* TASKS */
-  .section-header { display: flex; justify-content: space-between; align-items: center; padding: 0 16px; margin-bottom: 12px; }
-
-  .add-btn {
-    background: linear-gradient(135deg, var(--accent), #8b5cf6);
-    border: none;
-    color: #fff;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex; align-items: center; gap: 6px;
-  }
-
-  .task-item {
-    display: flex; align-items: flex-start; gap: 12px;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .task-item:last-child { border-bottom: none; }
-  .task-item:active { background: rgba(255,255,255,0.03); }
-
-  .task-check {
-    width: 22px; height: 22px;
-    border: 2px solid var(--border);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-    transition: all 0.2s;
-    cursor: pointer;
-  }
-
-  .task-check.done { background: var(--success); border-color: var(--success); }
-
-  .task-content { flex: 1; }
-  .task-title { font-size: 14px; font-weight: 500; color: var(--text); }
-  .task-title.done { text-decoration: line-through; color: var(--text3); }
-  .task-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-
-  .priority-badge {
-    font-size: 10px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .priority-badge.urgent { background: rgba(255,68,102,0.15); color: var(--danger); border: 1px solid rgba(255,68,102,0.3); }
-  .priority-badge.normal { background: rgba(108,99,255,0.15); color: var(--accent); border: 1px solid rgba(108,99,255,0.3); }
-  .priority-badge.low { background: rgba(0,212,170,0.15); color: var(--success); border: 1px solid rgba(0,212,170,0.3); }
-
-  .task-date { font-size: 11px; color: var(--text3); }
-
-  /* NOTES */
-  .notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px; }
-
-  .note-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px;
-    cursor: pointer;
-    transition: transform 0.2s;
-    min-height: 120px;
-    display: flex; flex-direction: column;
-  }
-
-  .note-card:active { transform: scale(0.97); }
-
-  .note-tag {
-    font-size: 9px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 3px 8px;
-    border-radius: 20px;
-    background: rgba(108,99,255,0.15);
-    color: var(--accent);
-    display: inline-block;
-    margin-bottom: 8px;
-    width: fit-content;
-  }
-
-  .note-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-
-  .note-preview { font-size: 12px; color: var(--text2); line-height: 1.4; flex: 1; }
-
-  .note-date { font-size: 10px; color: var(--text3); margin-top: 8px; }
-
-  /* AGENDA */
-  .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-
-  .cal-nav { width: 32px; height: 32px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); font-size: 16px; }
-
-  .calendar-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
-
-  .cal-day-name { text-align: center; font-size: 10px; color: var(--text3); font-family: 'Syne', sans-serif; font-weight: 700; text-transform: uppercase; padding: 4px 0; }
-
-  .cal-day {
-    aspect-ratio: 1;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 50%;
-    font-size: 13px;
-    cursor: pointer;
-    color: var(--text2);
-    transition: all 0.2s;
-  }
-
-  .cal-day:hover { background: var(--bg3); }
-  .cal-day.today { background: var(--accent); color: #fff; font-weight: 700; }
-  .cal-day.has-event::after { content:''; width: 4px; height: 4px; background: var(--accent2); border-radius: 50%; position: absolute; bottom: 2px; }
-  .cal-day.other-month { color: var(--text3); opacity: 0.4; }
-
-  .event-item {
-    display: flex; gap: 12px; align-items: flex-start;
-    padding: 12px;
-    background: var(--bg3);
-    border-radius: var(--radius-sm);
-    margin-bottom: 8px;
-  }
-
-  .event-time-col { text-align: center; min-width: 45px; }
-  .event-time { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent); }
-  .event-ampm { font-size: 10px; color: var(--text3); }
-
-  .event-line { width: 2px; background: linear-gradient(180deg, var(--accent), transparent); border-radius: 2px; flex-shrink: 0; min-height: 40px; }
-
-  .event-content {}
-  .event-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
-  .event-desc { font-size: 12px; color: var(--text2); margin-top: 3px; }
-
-  /* MODAL */
-  .modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(10px);
-    z-index: 200;
-    align-items: flex-end;
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 24px 24px 0 0;
-    padding: 24px;
-    width: 100%;
-    max-width: 480px;
-    margin: 0 auto;
-    animation: slideUp 0.3s ease;
-  }
-
-  @keyframes slideUp { from{ transform:translateY(100%); } to{ transform:translateY(0); } }
-
-  .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
-
-  .modal h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; }
-
-  .form-group { margin-bottom: 16px; }
-
-  .form-label { font-size: 11px; font-family: 'Syne', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 8px; display: block; }
-
-  .form-input {
-    width: 100%;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    color: var(--text);
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-  }
-
-  .form-input:focus { border-color: var(--accent); }
-
-  .priority-select { display: flex; gap: 8px; }
-
-  .priority-opt {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    text-align: center;
-    font-size: 12px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    cursor: pointer;
-    color: var(--text3);
-    transition: all 0.2s;
-  }
-
-  .priority-opt.selected.urgent { background: rgba(255,68,102,0.15); color: var(--danger); border-color: var(--danger); }
-  .priority-opt.selected.normal { background: rgba(108,99,255,0.15); color: var(--accent); border-color: var(--accent); }
-  .priority-opt.selected.low { background: rgba(0,212,170,0.15); color: var(--success); border-color: var(--success); }
-
-  .modal-btn {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, var(--accent), #8b5cf6);
-    border: none;
-    border-radius: var(--radius);
-    color: #fff;
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 8px;
-    letter-spacing: 0.5px;
-  }
-
-  .api-config {
-    background: rgba(108,99,255,0.1);
-    border: 1px solid rgba(108,99,255,0.3);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin: 0 16px 12px;
-  }
-
-  .api-config p { font-size: 13px; color: var(--text2); margin-bottom: 12px; line-height: 1.5; }
-
-  .api-input-row { display: flex; gap: 8px; }
-
-  .api-input {
-    flex: 1;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    color: var(--text);
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-  }
-
-  .api-save-btn {
-    background: var(--accent);
-    border: none;
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: var(--radius-sm);
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text3);
-  }
-
-  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
-  .empty-state p { font-size: 14px; line-height: 1.5; }
-
-  textarea.form-input { min-height: 80px; resize: none; }
-
-  .delete-btn {
-    background: rgba(255,68,102,0.1);
-    border: 1px solid rgba(255,68,102,0.3);
-    color: var(--danger);
-    padding: 8px 16px;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  .scroll-area { overflow-y: auto; flex: 1; }
-
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+:root {
+  --bg0: #080810;
+  --bg1: #0d0d1a;
+  --bg2: #12121f;
+  --bg3: #1a1a2e;
+  --bg4: #22223a;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --accent: #7c6cff;
+  --accent2: #ff6eb4;
+  --accent3: #00e5b0;
+  --accent4: #ffb830;
+  --text: #f0f0ff;
+  --text2: #8888aa;
+  --text3: #444466;
+  --danger: #ff4466;
+  --r: 14px;
+  --rs: 10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Outfit',sans-serif;background:var(--bg0);color:var(--text);max-width:480px;margin:0 auto;position:relative;display:flex;flex-direction:column}
+
+/* SCREENS */
+.screen{display:none;flex-direction:column;height:calc(100vh - 70px);overflow:hidden;animation:fadeIn .2s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* SCROLL */
+.scroll{overflow-y:auto;flex:1;padding-bottom:16px}
+.scroll::-webkit-scrollbar{width:3px}
+.scroll::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(8,8,16,0.97);backdrop-filter:blur(30px);border-top:1px solid var(--border);display:flex;padding:8px 4px 20px;z-index:100}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 4px;color:var(--text3);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;transition:color .2s;position:relative}
+.nav-item.active{color:var(--accent)}
+.nav-item svg{width:20px;height:20px}
+.nav-badge{position:absolute;top:2px;right:20%;background:var(--danger);color:#fff;font-size:9px;font-weight:800;padding:1px 5px;border-radius:10px;min-width:16px;text-align:center}
+
+/* HEADER */
+.hdr{padding:16px 16px 8px;position:sticky;top:0;background:rgba(8,8,16,0.95);backdrop-filter:blur(20px);z-index:10;border-bottom:1px solid var(--border)}
+.hdr-row{display:flex;justify-content:space-between;align-items:center}
+.hdr-sub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:2px}
+.hdr h2{font-size:22px;font-weight:800}
+.hdr-right{display:flex;gap:8px;align-items:center}
+.icon-btn{width:36px;height:36px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2)}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin:8px 14px 0}
+.card-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:10px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:24px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;border:none;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#9c6cff);color:#fff}
+.btn-sm{padding:7px 14px;font-size:12px}
+.btn-ghost{background:var(--bg3);border:1px solid var(--border);color:var(--text2)}
+.btn:active{transform:scale(.96)}
+
+/* ===== HOME ===== */
+.hero{margin:12px 14px;background:linear-gradient(135deg,#1a1535 0%,#0f1528 50%,#0a1f20 100%);border:1px solid rgba(124,108,255,.25);border-radius:20px;padding:20px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40%;right:-10%;width:250px;height:250px;background:radial-gradient(circle,rgba(124,108,255,.2) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-30%;left:-5%;width:180px;height:180px;background:radial-gradient(circle,rgba(0,229,176,.1) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.hero-label{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.hero-time{font-size:32px;font-weight:900;color:#fff;line-height:1}
+.hero-date{font-size:13px;color:rgba(255,255,255,.5);margin-top:4px;margin-bottom:16px}
+.hero-brief{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;font-size:13px;color:rgba(255,255,255,.7);line-height:1.6;position:relative;z-index:1}
+.hero-brief-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent3);margin-bottom:6px}
+
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 14px 0}
+.quick-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.quick-card:active{transform:scale(.97)}
+.quick-card-icon{font-size:24px;margin-bottom:8px}
+.quick-card-label{font-size:13px;font-weight:700;color:var(--text)}
+.quick-card-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.quick-card-num{position:absolute;top:10px;right:10px;background:var(--accent);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px}
+
+.actions-row{display:flex;gap:8px;margin:8px 14px 0;overflow-x:auto;padding-bottom:4px}
+.actions-row::-webkit-scrollbar{display:none}
+.action-chip{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:8px 14px;cursor:pointer;white-space:nowrap;font-size:12px;font-weight:600;color:var(--text2);transition:all .2s;flex-shrink:0}
+.action-chip:active{background:var(--bg3)}
+
+/* ===== CHAT ===== */
+.chat-header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);background:var(--bg0)}
+.aria-orb{width:42px;height:42px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;position:relative}
+.aria-orb::after{content:'';position:absolute;bottom:1px;right:1px;width:10px;height:10px;background:var(--accent3);border:2px solid var(--bg0);border-radius:50%}
+.aria-info{}
+.aria-name{font-weight:800;font-size:15px}
+.aria-status{font-size:11px;color:var(--accent3);display:flex;align-items:center;gap:4px}
+.status-dot{width:6px;height:6px;background:var(--accent3);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.chat-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.chat-messages::-webkit-scrollbar{width:2px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--bg4)}
+
+.msg{max-width:85%;animation:msgIn .25s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end}
+.msg.aria{align-self:flex-start}
+.msg-bubble{padding:11px 15px;border-radius:18px;font-size:14px;line-height:1.55}
+.msg.user .msg-bubble{background:linear-gradient(135deg,var(--accent),#9c6cff);color:#fff;border-bottom-right-radius:4px}
+.msg.aria .msg-bubble{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px}
+.msg-time{font-size:10px;color:var(--text3);margin-top:4px;padding:0 4px}
+.msg.user .msg-time{text-align:right}
+
+.msg-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.msg-action-btn{background:rgba(124,108,255,.15);border:1px solid rgba(124,108,255,.3);color:var(--accent);font-size:12px;font-weight:600;padding:6px 12px;border-radius:20px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s}
+.msg-action-btn:active{background:rgba(124,108,255,.3)}
+
+.typing-indicator{display:flex;gap:4px;padding:12px 15px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px;width:fit-content}
+.typing-indicator span{width:6px;height:6px;background:var(--text3);border-radius:50%;animation:typing 1.2s infinite}
+.typing-indicator span:nth-child(2){animation-delay:.15s}
+.typing-indicator span:nth-child(3){animation-delay:.3s}
+@keyframes typing{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+.chat-input-wrap{padding:10px 12px;background:var(--bg0);border-top:1px solid var(--border)}
+.chat-suggestions{display:flex;gap:6px;overflow-x:auto;margin-bottom:8px;padding-bottom:2px}
+.chat-suggestions::-webkit-scrollbar{display:none}
+.suggestion{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:6px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.chat-input-row{display:flex;gap:8px;align-items:flex-end}
+.chat-input{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:22px;padding:11px 16px;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif;outline:none;resize:none;max-height:90px;min-height:44px;line-height:1.4}
+.chat-input:focus{border-color:var(--accent)}
+.chat-input::placeholder{color:var(--text3)}
+.send-btn{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),#9c6cff);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s}
+.send-btn:active{transform:scale(.9)}
+.voice-btn{width:44px;height:44px;background:var(--bg3);border:1px solid var(--border);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);flex-shrink:0}
+
+/* API CONFIG */
+.api-setup{margin:12px 14px;background:rgba(124,108,255,.08);border:1px solid rgba(124,108,255,.2);border-radius:var(--r);padding:14px}
+.api-setup p{font-size:13px;color:var(--text2);margin-bottom:10px;line-height:1.5}
+.api-row{display:flex;gap:8px}
+.api-input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 13px;color:var(--text);font-size:13px;font-family:'Outfit',sans-serif;outline:none}
+.api-input:focus{border-color:var(--accent)}
+.api-btn{background:var(--accent);border:none;color:#fff;padding:10px 16px;border-radius:var(--rs);font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
+
+/* ===== EMAILS ===== */
+.email-filters{display:flex;gap:6px;padding:10px 14px;overflow-x:auto}
+.email-filters::-webkit-scrollbar{display:none}
+.filter-chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;border:1px solid var(--border);background:var(--bg2);color:var(--text2);transition:all .2s}
+.filter-chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.email-item{display:flex;gap:10px;padding:14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.email-item:active{background:var(--bg2)}
+.email-item.unread .email-subject{font-weight:700;color:var(--text)}
+.email-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+.email-content{flex:1;min-width:0}
+.email-from{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.email-subject{font-size:13px;color:var(--text2);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.email-preview{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.email-meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.email-time{font-size:11px;color:var(--text3)}
+.urgent-badge{background:rgba(255,68,102,.15);color:var(--danger);font-size:9px;font-weight:800;padding:2px 6px;border-radius:8px;border:1px solid rgba(255,68,102,.3)}
+
+/* ===== TASKS ===== */
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer}
+.task-check{width:22px;height:22px;border:2px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s;cursor:pointer}
+.task-check.done{background:var(--accent3);border-color:var(--accent3)}
+.task-content{flex:1}
+.task-title{font-size:14px;font-weight:500;color:var(--text);line-height:1.3}
+.task-title.done{text-decoration:line-through;color:var(--text3)}
+.task-meta{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap}
+.priority{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
+.priority.urgent{background:rgba(255,68,102,.12);color:var(--danger);border:1px solid rgba(255,68,102,.25)}
+.priority.normal{background:rgba(124,108,255,.12);color:var(--accent);border:1px solid rgba(124,108,255,.25)}
+.priority.low{background:rgba(0,229,176,.12);color:var(--accent3);border:1px solid rgba(0,229,176,.25)}
+.task-date{font-size:11px;color:var(--text3)}
+.task-del{color:var(--text3);padding:4px;cursor:pointer;font-size:16px}
+
+/* ===== NOTES ===== */
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 14px}
+.note-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:13px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;transition:all .2s}
+.note-card:active{transform:scale(.97)}
+.note-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:2px 8px;border-radius:10px;background:rgba(124,108,255,.12);color:var(--accent);display:inline-block;margin-bottom:7px;width:fit-content}
+.note-title{font-size:13px;font-weight:700;margin-bottom:5px;line-height:1.3}
+.note-preview{font-size:12px;color:var(--text2);line-height:1.4;flex:1}
+.note-date{font-size:10px;color:var(--text3);margin-top:7px}
+
+/* ===== AGENDA ===== */
+.cal-wrap{margin:10px 14px 0}
+.cal-nav-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.cal-nav-btn{width:30px;height:30px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:16px}
+.cal-month{font-size:16px;font-weight:800}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-day-name{text-align:center;font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;padding:4px 0}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:13px;cursor:pointer;color:var(--text2);transition:all .2s;position:relative}
+.cal-day.today{background:var(--accent);color:#fff;font-weight:800}
+.cal-day.other{color:var(--text3);opacity:.4}
+.cal-day.has-ev::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;background:var(--accent2);border-radius:50%}
+
+.event-item{display:flex;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:var(--rs);margin:0 14px 8px}
+.event-time-col{text-align:center;min-width:42px}
+.event-time{font-size:13px;font-weight:800;color:var(--accent);font-family:'JetBrains Mono',monospace}
+.event-ampm{font-size:9px;color:var(--text3)}
+.event-bar{width:2px;background:linear-gradient(180deg,var(--accent),transparent);border-radius:2px;min-height:36px;flex-shrink:0}
+.event-title{font-size:13px;font-weight:700;line-height:1.3}
+.event-desc{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* ===== MODAL ===== */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:200;align-items:flex-end}
+.overlay.open{display:flex}
+.modal{background:var(--bg1);border:1px solid var(--border);border-radius:24px 24px 0 0;padding:20px;width:100%;max-width:480px;margin:0 auto;animation:slideUp .3s ease;max-height:85vh;overflow-y:auto}
+.modal::-webkit-scrollbar{display:none}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 18px}
+.modal h3{font-size:18px;font-weight:800;margin-bottom:16px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:7px;display:block}
+.form-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:11px 13px;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif;outline:none}
+.form-input:focus{border-color:var(--accent)}
+textarea.form-input{min-height:70px;resize:none}
+.modal-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),#9c6cff);border:none;border-radius:var(--r);color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;letter-spacing:.3px}
+.modal-btn.ghost{background:var(--bg3);border:1px solid var(--border);color:var(--text2)}
+.priority-row{display:flex;gap:6px}
+.p-opt{flex:1;padding:8px 4px;border:1px solid var(--border);border-radius:var(--rs);text-align:center;font-size:11px;font-weight:700;cursor:pointer;color:var(--text3);transition:all .2s}
+.p-opt.sel.urgent{background:rgba(255,68,102,.12);color:var(--danger);border-color:var(--danger)}
+.p-opt.sel.normal{background:rgba(124,108,255,.12);color:var(--accent);border-color:var(--accent)}
+.p-opt.sel.low{background:rgba(0,229,176,.12);color:var(--accent3);border-color:var(--accent3)}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-icon{font-size:44px;margin-bottom:10px}
+.empty p{font-size:14px;line-height:1.5}
+
+/* CONNECT BANNER */
+.connect-banner{margin:10px 14px 0;background:rgba(0,229,176,.06);border:1px solid rgba(0,229,176,.15);border-radius:var(--r);padding:14px}
+.connect-banner p{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+
+/* GMAIL SEND BTN */
+.fab{position:fixed;bottom:90px;right:16px;width:52px;height:52px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(124,108,255,.4);z-index:50;font-size:22px;transition:transform .2s}
+.fab:active{transform:scale(.92)}
 </style>
 </head>
 <body>
 
 <!-- HOME -->
-<div class="screen active" id="screen-home">
-  <div class="header">
-    <div class="header-top">
-      <div>
-        <div class="greeting">Lundi 13 Avril 2026</div>
-        <h2 id="home-greeting">Bonjour 👋</h2>
-      </div>
-      <div class="avatar">D</div>
-    </div>
-  </div>
-
-  <div class="scroll-area">
-    <div class="home-hero">
-      <div class="hero-time" id="hero-time">22:00</div>
-      <div class="hero-greeting">Bonsoir,<br>Domingo</div>
-      <div class="hero-sub">Que voulez-vous faire aujourd'hui ?</div>
-    </div>
-
-    <div class="quick-actions">
-      <div class="quick-btn primary" onclick="goTo('chat')">
-        <div class="quick-btn-icon" style="background:rgba(108,99,255,0.2)">💬</div>
-        <div class="quick-btn-label">Parler à Aria</div>
-        <div class="quick-btn-sub">Chat IA</div>
-      </div>
-      <div class="quick-btn" onclick="goTo('tasks')">
-        <div class="quick-btn-icon" style="background:rgba(0,212,170,0.15)">✅</div>
-        <div class="quick-btn-label">Tâches</div>
-        <div class="quick-btn-sub" id="tasks-count">0 en cours</div>
-      </div>
-      <div class="quick-btn" onclick="goTo('notes')">
-        <div class="quick-btn-icon" style="background:rgba(255,170,0,0.15)">📝</div>
-        <div class="quick-btn-label">Notes</div>
-        <div class="quick-btn-sub" id="notes-count">0 notes</div>
-      </div>
-      <div class="quick-btn" onclick="goTo('agenda')">
-        <div class="quick-btn-icon" style="background:rgba(255,107,157,0.15)">📅</div>
-        <div class="quick-btn-label">Agenda</div>
-        <div class="quick-btn-sub" id="events-count">0 événements</div>
+<div class="screen active" id="s-home">
+  <div class="scroll">
+    <div class="hero">
+      <div class="hero-label">ARIA — Assistant IA</div>
+      <div class="hero-time" id="hero-clock">00:00</div>
+      <div class="hero-date" id="hero-date">Mardi 14 Avril 2026</div>
+      <div class="hero-brief">
+        <div class="hero-brief-title">⚡ Brief du jour</div>
+        <div id="hero-brief-text">Chargement de votre brief quotidien...</div>
       </div>
     </div>
 
-    <div class="card">
+    <div class="quick-grid">
+      <div class="quick-card" onclick="nav('chat')">
+        <div class="quick-card-icon">💬</div>
+        <div class="quick-card-label">Parler à ARIA</div>
+        <div class="quick-card-sub">Chat IA</div>
+      </div>
+      <div class="quick-card" onclick="nav('email')">
+        <div class="quick-card-icon">📧</div>
+        <div class="quick-card-label">Emails</div>
+        <div class="quick-card-sub" id="qs-email">Gmail</div>
+        <div class="quick-card-num" id="qn-email" style="display:none">0</div>
+      </div>
+      <div class="quick-card" onclick="nav('tasks')">
+        <div class="quick-card-icon">✅</div>
+        <div class="quick-card-label">Tâches</div>
+        <div class="quick-card-sub" id="qs-tasks">0 en cours</div>
+      </div>
+      <div class="quick-card" onclick="nav('agenda')">
+        <div class="quick-card-icon">📅</div>
+        <div class="quick-card-label">Agenda</div>
+        <div class="quick-card-sub" id="qs-events">0 événements</div>
+      </div>
+    </div>
+
+    <div class="actions-row">
+      <div class="action-chip" onclick="quickCmd('Résume mes emails non lus')">📧 Résumer emails</div>
+      <div class="action-chip" onclick="quickCmd('Quelles sont mes tâches urgentes ?')">🔥 Urgences</div>
+      <div class="action-chip" onclick="quickCmd('Prépare mon agenda de demain')">📅 Demain</div>
+      <div class="action-chip" onclick="quickCmd('Crée une note rapide')">📝 Note rapide</div>
+      <div class="action-chip" onclick="quickCmd('Montre mes statistiques')">📊 Stats</div>
+    </div>
+
+    <div class="card" style="margin-top:10px">
       <div class="card-title">Vue d'ensemble</div>
-      <div class="stats-row">
-        <div class="stat-item">
-          <div class="stat-num" id="stat-tasks" style="color:var(--accent)">0</div>
-          <div class="stat-label">Tâches</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div style="text-align:center">
+          <div style="font-size:22px;font-weight:900;color:var(--accent)" id="stat-t">0</div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Tâches</div>
         </div>
-        <div class="stat-item">
-          <div class="stat-num" id="stat-urgent" style="color:var(--danger)">0</div>
-          <div class="stat-label">Urgentes</div>
+        <div style="text-align:center">
+          <div style="font-size:22px;font-weight:900;color:var(--danger)" id="stat-u">0</div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Urgentes</div>
         </div>
-        <div class="stat-item">
-          <div class="stat-num" id="stat-notes" style="color:var(--warning)">0</div>
-          <div class="stat-label">Notes</div>
+        <div style="font-size:22px;font-weight:900;color:var(--accent4);text-align:center" id="stat-n">
+          <div id="stat-n">0</div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Notes</div>
         </div>
-        <div class="stat-item">
-          <div class="stat-num" id="stat-events" style="color:var(--accent2)">0</div>
-          <div class="stat-label">Eventos</div>
+        <div style="text-align:center">
+          <div style="font-size:22px;font-weight:900;color:var(--accent2)" id="stat-e">0</div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Events</div>
         </div>
       </div>
     </div>
@@ -657,778 +314,275 @@
 </div>
 
 <!-- CHAT -->
-<div class="screen" id="screen-chat">
-  <div class="aria-header">
-    <div class="aria-avatar">🤖</div>
-    <div>
-      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px">Aria</div>
+<div class="screen" id="s-chat">
+  <div class="chat-header">
+    <div class="aria-orb">🤖</div>
+    <div class="aria-info">
+      <div class="aria-name">ARIA</div>
       <div class="aria-status"><div class="status-dot"></div> Assistante IA active</div>
     </div>
-    <div style="margin-left:auto;cursor:pointer;color:var(--text3);font-size:13px" onclick="clearChat()">Effacer</div>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <div class="icon-btn" onclick="clearChat()" title="Effacer">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+      </div>
+    </div>
   </div>
 
-  <div id="api-warning" class="api-config">
-    <p>🔑 Entrez votre clé API Claude (Anthropic) pour activer le chat IA :</p>
-    <div class="api-input-row">
+  <div id="api-setup-banner" class="api-setup">
+    <p>🔑 Entrez votre clé API Claude pour activer ARIA :</p>
+    <div class="api-row">
       <input type="password" class="api-input" id="api-key-input" placeholder="sk-ant-...">
-      <button class="api-save-btn" onclick="saveApiKey()">Sauver</button>
+      <button class="api-btn" onclick="saveKey()">Activer</button>
     </div>
   </div>
 
-  <div class="chat-container" id="chat-messages">
+  <div class="chat-messages" id="chat-msgs">
     <div class="msg aria">
-      Bonjour ! Je suis Aria, votre assistante IA personnelle. Comment puis-je vous aider aujourd'hui ? 😊
+      <div class="msg-bubble">Bonjour ! Je suis ARIA, votre assistante IA personnelle 🤖<br><br>Je peux vous aider à :<br>• Lire et répondre à vos emails<br>• Gérer votre agenda et tâches<br>• Prendre des notes<br>• Chercher dans vos données<br><br>Que voulez-vous faire ?</div>
       <div class="msg-time">maintenant</div>
+      <div class="msg-actions">
+        <div class="msg-action-btn" onclick="quickCmd('Résume mes emails')">📧 Emails</div>
+        <div class="msg-action-btn" onclick="quickCmd('Mes tâches du jour')">✅ Tâches</div>
+        <div class="msg-action-btn" onclick="quickCmd('Mon agenda')">📅 Agenda</div>
+      </div>
     </div>
   </div>
 
-  <div class="chat-input-area">
-    <textarea class="chat-input" id="chat-input" placeholder="Écrivez un message..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-    <button class="send-btn" onclick="sendMessage()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18">
-        <line x1="22" y1="2" x2="11" y2="13"></line>
-        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-      </svg>
-    </button>
+  <div class="chat-input-wrap">
+    <div class="chat-suggestions" id="chat-suggestions">
+      <div class="suggestion" onclick="quickCmd('Lis mes emails non lus')">📧 Emails non lus</div>
+      <div class="suggestion" onclick="quickCmd('Crée une tâche urgente')">🔥 Tâche urgente</div>
+      <div class="suggestion" onclick="quickCmd('Ajoute un événement demain')">📅 Événement</div>
+      <div class="suggestion" onclick="quickCmd('Note rapide')">📝 Note</div>
+      <div class="suggestion" onclick="quickCmd('Mon brief du jour')">⚡ Brief</div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chat-input" placeholder="Parlez à ARIA..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <div class="voice-btn" onclick="startVoice()" id="voice-btn">🎤</div>
+      <button class="send-btn" onclick="sendMsg()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      </button>
+    </div>
   </div>
 </div>
 
-<!-- TASKS -->
-<div class="screen" id="screen-tasks">
-  <div class="header">
-    <div class="header-top">
+<!-- EMAIL -->
+<div class="screen" id="s-email">
+  <div class="hdr">
+    <div class="hdr-row">
       <div>
-        <div class="greeting">Gestion</div>
-        <h2>Mes Tâches</h2>
+        <div class="hdr-sub">Messagerie</div>
+        <h2>Gmail</h2>
       </div>
-      <button class="add-btn" onclick="openTaskModal()">+ Ajouter</button>
+      <div class="hdr-right">
+        <div class="icon-btn" onclick="loadEmails()" title="Rafraîchir">↻</div>
+        <div class="icon-btn" onclick="openModal('send-modal')" title="Rédiger">✏️</div>
+      </div>
+    </div>
+    <div class="email-filters">
+      <div class="filter-chip active" onclick="filterEmails('all',this)">Tous</div>
+      <div class="filter-chip" onclick="filterEmails('unread',this)">Non lus</div>
+      <div class="filter-chip" onclick="filterEmails('urgent',this)">Urgents</div>
     </div>
   </div>
+  <div class="scroll">
+    <div id="gmail-connect-banner" class="connect-banner">
+      <p>📧 Connectez Gmail pour lire et gérer vos emails avec ARIA</p>
+      <button class="btn btn-primary btn-sm" onclick="connectGoogle()">🔗 Connecter Gmail</button>
+    </div>
+    <div id="emails-container"></div>
+  </div>
+  <div class="fab" onclick="openModal('send-modal')">✏️</div>
+</div>
 
-  <div class="scroll-area">
-    <div class="card" style="padding:0;overflow:hidden">
-      <div id="tasks-list">
-        <div class="empty-state">
-          <div class="icon">✅</div>
-          <p>Aucune tâche pour l'instant.<br>Créez votre première tâche !</p>
-        </div>
+<!-- TASKS -->
+<div class="screen" id="s-tasks">
+  <div class="hdr">
+    <div class="hdr-row">
+      <div>
+        <div class="hdr-sub">Organisation</div>
+        <h2>Tâches</h2>
       </div>
+      <button class="btn btn-primary btn-sm" onclick="openModal('task-modal')">+ Ajouter</button>
+    </div>
+  </div>
+  <div class="scroll">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div id="tasks-list"></div>
     </div>
   </div>
 </div>
 
 <!-- NOTES -->
-<div class="screen" id="screen-notes">
-  <div class="header">
-    <div class="header-top">
+<div class="screen" id="s-notes">
+  <div class="hdr">
+    <div class="hdr-row">
       <div>
-        <div class="greeting">Organisation</div>
-        <h2>Mes Notes</h2>
+        <div class="hdr-sub">Mémoire</div>
+        <h2>Notes</h2>
       </div>
-      <button class="add-btn" onclick="openNoteModal()">+ Ajouter</button>
+      <button class="btn btn-primary btn-sm" onclick="openModal('note-modal')">+ Ajouter</button>
     </div>
   </div>
-
-  <div class="scroll-area">
-    <div id="notes-grid" class="notes-grid">
-      <div class="empty-state" style="grid-column:span 2">
-        <div class="icon">📝</div>
-        <p>Aucune note pour l'instant.<br>Créez votre première note !</p>
-      </div>
-    </div>
+  <div class="scroll">
+    <div class="notes-grid" id="notes-grid"></div>
   </div>
 </div>
 
 <!-- AGENDA -->
-<div class="screen" id="screen-agenda">
-  <div class="header">
-    <div class="header-top">
+<div class="screen" id="s-agenda">
+  <div class="hdr">
+    <div class="hdr-row">
       <div>
-        <div class="greeting">Planning</div>
-        <h2>Mon Agenda</h2>
+        <div class="hdr-sub">Planning</div>
+        <h2>Agenda</h2>
       </div>
-      <button class="add-btn" onclick="openEventModal()">+ Ajouter</button>
+      <button class="btn btn-primary btn-sm" onclick="openModal('event-modal')">+ Ajouter</button>
     </div>
   </div>
-
-  <div class="scroll-area">
-    <div class="card">
-      <div class="calendar-header">
-        <button class="cal-nav" onclick="prevMonth()">‹</button>
-        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px" id="cal-title">Avril 2026</div>
-        <button class="cal-nav" onclick="nextMonth()">›</button>
+  <div class="scroll">
+    <div class="cal-wrap">
+      <div class="cal-nav-row">
+        <div class="cal-nav-btn" onclick="prevMonth()">‹</div>
+        <div class="cal-month" id="cal-title">Avril 2026</div>
+        <div class="cal-nav-btn" onclick="nextMonth()">›</div>
       </div>
-      <div class="calendar-grid" id="cal-days-names"></div>
-      <div class="calendar-grid" id="cal-days" style="margin-top:4px"></div>
+      <div class="cal-grid" id="cal-names"></div>
+      <div class="cal-grid" id="cal-days" style="margin-top:4px"></div>
     </div>
-
-    <div style="padding:0 16px">
-      <div class="card-title" style="margin-bottom:12px">Événements à venir</div>
-      <div id="events-list">
-        <div class="empty-state">
-          <div class="icon">📅</div>
-          <p>Aucun événement prévu.</p>
-        </div>
-      </div>
-    </div>
+    <div style="margin:14px 14px 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3)">Événements à venir</div>
+    <div id="events-list"></div>
   </div>
 </div>
 
-
-<!-- GMAIL -->
-<div class="screen" id="screen-gmail">
-  <div class="header">
-    <div class="header-top">
-      <div>
-        <div class="greeting">Messagerie</div>
-        <h2>Gmail</h2>
-      </div>
-      <button class="add-btn" onclick="connectGoogle()" id="google-connect-btn">🔗 Connecter</button>
-    </div>
-  </div>
-  <div class="scroll-area">
-    <div id="gmail-status" class="api-config" style="display:none">
-      <p>✅ Gmail connecté ! Chargement des emails...</p>
-    </div>
-    <div id="gmail-connect" class="api-config">
-      <p>📧 Connectez votre Gmail pour lire et envoyer des emails avec l'IA</p>
-      <button class="modal-btn" onclick="connectGoogle()">🔗 Connecter Gmail + Calendar</button>
-    </div>
-    <div id="emails-list" style="padding:0 16px"></div>
-  </div>
-</div>
-
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <div class="nav-item active" id="nav-home" onclick="goTo('home')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-      <polyline points="9 22 9 12 15 12 15 22"></polyline>
-    </svg>
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-item active" id="nav-home" onclick="nav('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
     Accueil
   </div>
-  <div class="nav-item" id="nav-chat" onclick="goTo('chat')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-    </svg>
-    Chat
+  <div class="nav-item" id="nav-chat" onclick="nav('chat')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    ARIA
   </div>
-  <div class="nav-item" id="nav-tasks" onclick="goTo('tasks')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polyline points="9 11 12 14 22 4"></polyline>
-      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-    </svg>
+  <div class="nav-item" id="nav-email" onclick="nav('email')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,12 2,6"></polyline></svg>
+    Gmail
+    <div class="nav-badge" id="email-badge" style="display:none">0</div>
+  </div>
+  <div class="nav-item" id="nav-tasks" onclick="nav('tasks')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
     Tâches
   </div>
-  <div class="nav-item" id="nav-notes" onclick="goTo('notes')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-      <polyline points="14 2 14 8 20 8"></polyline>
-    </svg>
-    Notes
-  </div>
-  <div class="nav-item" id="nav-agenda" onclick="goTo('agenda')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-      <line x1="16" y1="2" x2="16" y2="6"></line>
-      <line x1="8" y1="2" x2="8" y2="6"></line>
-      <line x1="3" y1="10" x2="21" y2="10"></line>
-    </svg>
+  <div class="nav-item" id="nav-agenda" onclick="nav('agenda')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
     Agenda
-  </div>
-  <div class="nav-item" id="nav-gmail" onclick="goTo('gmail')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-      <polyline points="22,6 12,12 2,6"></polyline>
-    </svg>
-    Gmail
   </div>
 </nav>
 
 <!-- MODALS -->
-<div class="modal-overlay" id="task-modal">
+<!-- Task Modal -->
+<div class="overlay" id="task-modal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h3>Nouvelle Tâche</h3>
+    <h3>✅ Nouvelle Tâche</h3>
     <div class="form-group">
       <label class="form-label">Titre</label>
-      <input type="text" class="form-input" id="task-title-input" placeholder="Nom de la tâche...">
+      <input type="text" class="form-input" id="task-title" placeholder="Que faut-il faire ?">
     </div>
     <div class="form-group">
       <label class="form-label">Date limite</label>
-      <input type="date" class="form-input" id="task-date-input">
+      <input type="date" class="form-input" id="task-date">
     </div>
     <div class="form-group">
       <label class="form-label">Priorité</label>
-      <div class="priority-select">
-        <div class="priority-opt selected urgent" onclick="selectPriority('urgent')">🔴 Urgent</div>
-        <div class="priority-opt normal" onclick="selectPriority('normal')">🔵 Normal</div>
-        <div class="priority-opt low" onclick="selectPriority('low')">🟢 Bas</div>
+      <div class="priority-row">
+        <div class="p-opt sel urgent" onclick="selPriority('urgent')">🔴 Urgent</div>
+        <div class="p-opt normal" onclick="selPriority('normal')">🔵 Normal</div>
+        <div class="p-opt low" onclick="selPriority('low')">🟢 Bas</div>
       </div>
     </div>
-    <button class="modal-btn" onclick="addTask()">Ajouter la tâche</button>
-    <button class="modal-btn" style="background:var(--bg3);margin-top:8px" onclick="closeModal('task-modal')">Annuler</button>
+    <button class="modal-btn" onclick="addTask()">Créer la tâche</button>
+    <button class="modal-btn ghost" onclick="closeModal('task-modal')" style="margin-top:8px">Annuler</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="note-modal">
+<!-- Note Modal -->
+<div class="overlay" id="note-modal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h3>Nouvelle Note</h3>
+    <h3>📝 Nouvelle Note</h3>
     <div class="form-group">
       <label class="form-label">Titre</label>
-      <input type="text" class="form-input" id="note-title-input" placeholder="Titre de la note...">
+      <input type="text" class="form-input" id="note-title" placeholder="Titre de la note">
     </div>
     <div class="form-group">
       <label class="form-label">Contenu</label>
-      <textarea class="form-input" id="note-content-input" placeholder="Écrivez votre note..."></textarea>
+      <textarea class="form-input" id="note-content" placeholder="Écrivez votre note..."></textarea>
     </div>
     <div class="form-group">
       <label class="form-label">Catégorie</label>
-      <input type="text" class="form-input" id="note-tag-input" placeholder="ex: Travail, Personnel...">
+      <input type="text" class="form-input" id="note-tag" placeholder="ex: Travail, Idée, Personnel...">
     </div>
-    <button class="modal-btn" onclick="addNote()">Ajouter la note</button>
-    <button class="modal-btn" style="background:var(--bg3);margin-top:8px" onclick="closeModal('note-modal')">Annuler</button>
+    <button class="modal-btn" onclick="addNote()">Sauvegarder</button>
+    <button class="modal-btn ghost" onclick="closeModal('note-modal')" style="margin-top:8px">Annuler</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="event-modal">
+<!-- Event Modal -->
+<div class="overlay" id="event-modal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h3>Nouvel Événement</h3>
+    <h3>📅 Nouvel Événement</h3>
     <div class="form-group">
       <label class="form-label">Titre</label>
-      <input type="text" class="form-input" id="event-title-input" placeholder="Nom de l'événement...">
+      <input type="text" class="form-input" id="event-title" placeholder="Nom de l'événement">
     </div>
     <div class="form-group">
       <label class="form-label">Date</label>
-      <input type="date" class="form-input" id="event-date-input">
+      <input type="date" class="form-input" id="event-date">
     </div>
     <div class="form-group">
       <label class="form-label">Heure</label>
-      <input type="time" class="form-input" id="event-time-input">
+      <input type="time" class="form-input" id="event-time">
     </div>
     <div class="form-group">
       <label class="form-label">Description</label>
-      <input type="text" class="form-input" id="event-desc-input" placeholder="Description optionnelle...">
+      <input type="text" class="form-input" id="event-desc" placeholder="Description optionnelle">
     </div>
-    <button class="modal-btn" onclick="addEvent()">Ajouter l'événement</button>
-    <button class="modal-btn" style="background:var(--bg3);margin-top:8px" onclick="closeModal('event-modal')">Annuler</button>
+    <button class="modal-btn" onclick="addEvent()">Créer l'événement</button>
+    <button class="modal-btn ghost" onclick="closeModal('event-modal')" style="margin-top:8px">Annuler</button>
   </div>
 </div>
 
-<script>
-// STATE
-let state = {
-  tasks: JSON.parse(localStorage.getItem('aria_tasks') || '[]'),
-  notes: JSON.parse(localStorage.getItem('aria_notes') || '[]'),
-  events: JSON.parse(localStorage.getItem('aria_events') || '[]'),
-  apiKey: localStorage.getItem('aria_api_key') || '',
-  messages: [{ role: 'assistant', content: 'Bonjour ! Je suis Aria, votre assistante IA personnelle. Comment puis-je vous aider aujourd\'hui ? 😊' }],
-  currentPriority: 'urgent',
-  calYear: 2026,
-  calMonth: 3
-};
-
-// NAVIGATION
-function goTo(screen) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('screen-' + screen).classList.add('active');
-  document.getElementById('nav-' + screen).classList.add('active');
-  if(screen === 'agenda') renderCalendar();
-  if(screen === 'gmail') { const t = localStorage.getItem('aria_google_token'); if(t) loadEmails(); }
-  if(screen === 'tasks') renderTasks();
-  if(screen === 'notes') renderNotes();
-  if(screen === 'home') updateHomeStats();
-}
-
-// TIME
-function updateTime() {
-  const now = new Date();
-  const h = now.getHours().toString().padStart(2,'0');
-  const m = now.getMinutes().toString().padStart(2,'0');
-  const el = document.getElementById('hero-time');
-  if(el) el.textContent = h + ':' + m;
-  const greeting = now.getHours() < 12 ? 'Bonjour 👋' : now.getHours() < 18 ? 'Bon après-midi 👋' : 'Bonsoir 👋';
-  const hg = document.getElementById('home-greeting');
-  if(hg) hg.textContent = greeting;
-}
-
-// HOME STATS
-function updateHomeStats() {
-  const tasks = state.tasks.filter(t => !t.done);
-  const urgent = state.tasks.filter(t => !t.done && t.priority === 'urgent');
-  document.getElementById('stat-tasks').textContent = tasks.length;
-  document.getElementById('stat-urgent').textContent = urgent.length;
-  document.getElementById('stat-notes').textContent = state.notes.length;
-  document.getElementById('stat-events').textContent = state.events.length;
-  document.getElementById('tasks-count').textContent = tasks.length + ' en cours';
-  document.getElementById('notes-count').textContent = state.notes.length + ' notes';
-  document.getElementById('events-count').textContent = state.events.length + ' événements';
-}
-
-// SAVE
-function save() {
-  localStorage.setItem('aria_tasks', JSON.stringify(state.tasks));
-  localStorage.setItem('aria_notes', JSON.stringify(state.notes));
-  localStorage.setItem('aria_events', JSON.stringify(state.events));
-  updateHomeStats();
-}
-
-// API KEY
-function saveApiKey() {
-  const key = document.getElementById('api-key-input').value.trim();
-  if(key) {
-    state.apiKey = key;
-    localStorage.setItem('aria_api_key', key);
-    document.getElementById('api-warning').style.display = 'none';
-    addMsg('aria', '✅ Clé API sauvegardée ! Je suis maintenant connectée à Claude. Comment puis-je vous aider ?');
-  }
-}
-
-function checkApiKey() {
-  if(state.apiKey) {
-    document.getElementById('api-warning').style.display = 'none';
-  }
-}
-
-// CHAT
-function addMsg(role, content) {
-  const container = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'msg ' + role;
-  const now = new Date();
-  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-  div.innerHTML = content.replace(/\n/g,'<br>') + '<div class="msg-time">' + time + '</div>';
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function showTyping() {
-  const container = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'msg aria';
-  div.id = 'typing-indicator';
-  div.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function removeTyping() {
-  const t = document.getElementById('typing-indicator');
-  if(t) t.remove();
-}
-
-async function sendMessage() {
-  const input = document.getElementById('chat-input');
-  const msg = input.value.trim();
-  if(!msg) return;
-  input.value = '';
-  input.style.height = 'auto';
-  addMsg('user', msg);
-  state.messages.push({ role: 'user', content: msg });
-  if(!state.apiKey) {
-    addMsg('aria', '⚠️ Veuillez d\'abord entrer votre clé API Claude ci-dessus pour activer le chat IA.');
-    return;
-  }
-  showTyping();
-  try {
-    const systemPrompt = `Tu es Aria, une assistante IA personnelle en français. Tu aides avec: tâches, notes, agenda, emails, organisation. 
-Tâches actuelles: ${JSON.stringify(state.tasks.slice(0,5))}
-Notes: ${JSON.stringify(state.notes.slice(0,3))}
-Réponds toujours en français, de façon concise et utile.`;
-    const res = await fetch('/.netlify/functions/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        messages: state.messages.slice(-10),
-        apiKey: state.apiKey
-      })
-    });
-    removeTyping();
-    if(res.ok) {
-      const data = await res.json();
-      const reply = data.content[0].text;
-      state.messages.push({ role: 'assistant', content: reply });
-      addMsg('aria', reply);
-    } else {
-      const err = await res.json();
-      addMsg('aria', '❌ Erreur: ' + (err.error?.message || 'Vérifiez votre clé API.'));
-    }
-  } catch(e) {
-    removeTyping();
-    addMsg('aria', '❌ Erreur de connexion. Vérifiez votre connexion internet.');
-  }
-}
-
-function handleKey(e) {
-  if(e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
-}
-
-function clearChat() {
-  state.messages = [{ role: 'assistant', content: 'Bonjour ! Je suis Aria, votre assistante IA personnelle. Comment puis-je vous aider aujourd\'hui ? 😊' }];
-  const container = document.getElementById('chat-messages');
-  container.innerHTML = '';
-  addMsg('aria', 'Bonjour ! Je suis Aria, votre assistante IA personnelle. Comment puis-je vous aider aujourd\'hui ? 😊');
-}
-
-// TASKS
-function openTaskModal() {
-  state.currentPriority = 'urgent';
-  document.getElementById('task-title-input').value = '';
-  document.getElementById('task-date-input').value = '';
-  selectPriority('urgent');
-  document.getElementById('task-modal').classList.add('open');
-}
-
-function selectPriority(p) {
-  state.currentPriority = p;
-  document.querySelectorAll('.priority-opt').forEach(el => el.classList.remove('selected'));
-  document.querySelector('.priority-opt.' + p).classList.add('selected');
-}
-
-function addTask() {
-  const title = document.getElementById('task-title-input').value.trim();
-  if(!title) return;
-  state.tasks.unshift({
-    id: Date.now(),
-    title,
-    date: document.getElementById('task-date-input').value,
-    priority: state.currentPriority,
-    done: false
-  });
-  save();
-  renderTasks();
-  closeModal('task-modal');
-}
-
-function toggleTask(id) {
-  const t = state.tasks.find(t => t.id === id);
-  if(t) { t.done = !t.done; save(); renderTasks(); }
-}
-
-function renderTasks() {
-  const list = document.getElementById('tasks-list');
-  if(!state.tasks.length) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>Aucune tâche pour l\'instant.<br>Créez votre première tâche !</p></div>';
-    return;
-  }
-  const sorted = [...state.tasks].sort((a,b) => {
-    if(a.done !== b.done) return a.done ? 1 : -1;
-    const p = {urgent:0,normal:1,low:2};
-    return (p[a.priority]||1)-(p[b.priority]||1);
-  });
-  list.innerHTML = sorted.map(t => `
-    <div class="task-item">
-      <div class="task-check ${t.done?'done':''}" onclick="toggleTask(${t.id})">
-        ${t.done ? '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
-      </div>
-      <div class="task-content">
-        <div class="task-title ${t.done?'done':''}">${t.title}</div>
-        <div class="task-meta">
-          <span class="priority-badge ${t.priority}">${t.priority==='urgent'?'🔴 Urgent':t.priority==='normal'?'🔵 Normal':'🟢 Bas'}</span>
-          ${t.date ? '<span class="task-date">📅 '+t.date+'</span>' : ''}
-        </div>
-      </div>
-      <div onclick="deleteTask(${t.id})" style="color:var(--text3);cursor:pointer;padding:4px">🗑</div>
-    </div>
-  `).join('');
-}
-
-function deleteTask(id) {
-  state.tasks = state.tasks.filter(t => t.id !== id);
-  save();
-  renderTasks();
-}
-
-// NOTES
-function openNoteModal() {
-  document.getElementById('note-title-input').value = '';
-  document.getElementById('note-content-input').value = '';
-  document.getElementById('note-tag-input').value = '';
-  document.getElementById('note-modal').classList.add('open');
-}
-
-function addNote() {
-  const title = document.getElementById('note-title-input').value.trim();
-  const content = document.getElementById('note-content-input').value.trim();
-  if(!title) return;
-  state.notes.unshift({
-    id: Date.now(),
-    title,
-    content,
-    tag: document.getElementById('note-tag-input').value.trim() || 'Note',
-    date: new Date().toLocaleDateString('fr-FR')
-  });
-  save();
-  renderNotes();
-  closeModal('note-modal');
-}
-
-function renderNotes() {
-  const grid = document.getElementById('notes-grid');
-  if(!state.notes.length) {
-    grid.innerHTML = '<div class="empty-state" style="grid-column:span 2"><div class="icon">📝</div><p>Aucune note pour l\'instant.<br>Créez votre première note !</p></div>';
-    return;
-  }
-  grid.innerHTML = state.notes.map(n => `
-    <div class="note-card">
-      <span class="note-tag">${n.tag}</span>
-      <div class="note-title">${n.title}</div>
-      <div class="note-preview">${n.content}</div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-        <div class="note-date">${n.date}</div>
-        <div onclick="deleteNote(${n.id})" style="color:var(--text3);cursor:pointer;font-size:14px">🗑</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function deleteNote(id) {
-  state.notes = state.notes.filter(n => n.id !== id);
-  save();
-  renderNotes();
-}
-
-// EVENTS
-function openEventModal() {
-  document.getElementById('event-title-input').value = '';
-  document.getElementById('event-date-input').value = '';
-  document.getElementById('event-time-input').value = '';
-  document.getElementById('event-desc-input').value = '';
-  document.getElementById('event-modal').classList.add('open');
-}
-
-function addEvent() {
-  const title = document.getElementById('event-title-input').value.trim();
-  if(!title) return;
-  state.events.unshift({
-    id: Date.now(),
-    title,
-    date: document.getElementById('event-date-input').value,
-    time: document.getElementById('event-time-input').value,
-    desc: document.getElementById('event-desc-input').value.trim()
-  });
-  save();
-  renderEvents();
-  renderCalendar();
-  closeModal('event-modal');
-}
-
-function renderEvents() {
-  const list = document.getElementById('events-list');
-  const upcoming = state.events
-    .filter(e => e.date >= new Date().toISOString().split('T')[0])
-    .sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
-  if(!upcoming.length) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">📅</div><p>Aucun événement prévu.</p></div>';
-    return;
-  }
-  list.innerHTML = upcoming.map(e => {
-    const [h,m] = (e.time || '00:00').split(':');
-    const ampm = parseInt(h) >= 12 ? 'PM' : 'AM';
-    const h12 = parseInt(h) % 12 || 12;
-    return `
-      <div class="event-item">
-        <div class="event-time-col">
-          <div class="event-time">${h12}:${m||'00'}</div>
-          <div class="event-ampm">${ampm}</div>
-        </div>
-        <div class="event-line"></div>
-        <div class="event-content" style="flex:1">
-          <div class="event-title">${e.title}</div>
-          <div class="event-desc">${e.date}${e.desc?' • '+e.desc:''}</div>
-        </div>
-        <div onclick="deleteEvent(${e.id})" style="color:var(--text3);cursor:pointer;font-size:14px">🗑</div>
-      </div>
-    `;
-  }).join('');
-}
-
-function deleteEvent(id) {
-  state.events = state.events.filter(e => e.id !== id);
-  save();
-  renderEvents();
-  renderCalendar();
-}
-
-// CALENDAR
-const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-const DAYS = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-
-function renderCalendar() {
-  document.getElementById('cal-title').textContent = MONTHS[state.calMonth] + ' ' + state.calYear;
-  const namesEl = document.getElementById('cal-days-names');
-  namesEl.innerHTML = DAYS.map(d => `<div class="cal-day-name">${d}</div>`).join('');
-  const daysEl = document.getElementById('cal-days');
-  const first = new Date(state.calYear, state.calMonth, 1).getDay();
-  const total = new Date(state.calYear, state.calMonth+1, 0).getDate();
-  const today = new Date();
-  let html = '';
-  for(let i=0;i<first;i++) {
-    const d = new Date(state.calYear, state.calMonth, -first+i+1).getDate();
-    html += `<div class="cal-day other-month">${d}</div>`;
-  }
-  for(let d=1;d<=total;d++) {
-    const dateStr = state.calYear+'-'+(state.calMonth+1).toString().padStart(2,'0')+'-'+d.toString().padStart(2,'0');
-    const isToday = d===today.getDate() && state.calMonth===today.getMonth() && state.calYear===today.getFullYear();
-    const hasEv = state.events.some(e=>e.date===dateStr);
-    html += `<div class="cal-day ${isToday?'today':''}" style="position:relative">${d}${hasEv?'<span style="position:absolute;bottom:1px;left:50%;transform:translateX(-50%);width:4px;height:4px;background:var(--accent2);border-radius:50%;display:block"></span>':''}</div>`;
-  }
-  daysEl.innerHTML = html;
-  renderEvents();
-}
-
-function prevMonth() {
-  if(state.calMonth===0){state.calMonth=11;state.calYear--;}else state.calMonth--;
-  renderCalendar();
-}
-
-function nextMonth() {
-  if(state.calMonth===11){state.calMonth=0;state.calYear++;}else state.calMonth++;
-  renderCalendar();
-}
-
-// MODAL
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
-
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
-});
-
-
-// GOOGLE AUTH
-function connectGoogle() {
-  window.open('/.netlify/functions/google-auth', '_blank', 'width=500,height=600');
-  // Check for token every 2 seconds
-  const check = setInterval(() => {
-    const token = localStorage.getItem('aria_google_token');
-    if(token) {
-      clearInterval(check);
-      state.googleToken = token;
-      loadEmails();
-      document.getElementById('gmail-connect').style.display = 'none';
-      document.getElementById('gmail-status').style.display = 'block';
-    }
-  }, 2000);
-}
-
-// LOAD EMAILS
-async function loadEmails() {
-  const token = localStorage.getItem('aria_google_token');
-  if(!token) return;
-  
-  const list = document.getElementById('emails-list');
-  list.innerHTML = '<div class="empty-state"><p>Chargement des emails...</p></div>';
-  
-  try {
-    const res = await fetch('/.netlify/functions/gmail', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, action: 'list' })
-    });
-    const data = await res.json();
-    
-    if(!data.emails || !data.emails.length) {
-      list.innerHTML = '<div class="empty-state"><div class="icon">📧</div><p>Aucun email non lu</p></div>';
-      return;
-    }
-    
-    list.innerHTML = data.emails.map(e => `
-      <div class="card" style="margin-bottom:10px;cursor:pointer" onclick="showEmailDetail('${e.id}','${e.from.replace(/'/g,"\'")}','${e.subject.replace(/'/g,"\'")}','${e.snippet.replace(/'/g,"\'")}')">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:4px;color:var(--text)">${e.subject || 'Sans sujet'}</div>
-        <div style="font-size:12px;color:var(--accent);margin-bottom:6px">${e.from}</div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.4">${e.snippet}</div>
-      </div>
-    `).join('');
-  } catch(e) {
-    list.innerHTML = '<div class="empty-state"><p>Erreur de chargement</p></div>';
-  }
-}
-
-function showEmailDetail(id, from, subject, snippet) {
-  document.getElementById('email-from').textContent = from;
-  document.getElementById('email-subject').textContent = subject;
-  document.getElementById('email-body').textContent = snippet;
-  document.getElementById('email-modal').classList.add('open');
-}
-
-async function sendEmail() {
-  const token = localStorage.getItem('aria_google_token');
-  const to = document.getElementById('send-to').value;
-  const subject = document.getElementById('send-subject').value;
-  const body = document.getElementById('send-body').value;
-  
-  if(!to || !subject || !body) { alert('Remplissez tous les champs'); return; }
-  
-  try {
-    await fetch('/.netlify/functions/gmail', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, action: 'send', to, subject, body })
-    });
-    closeModal('send-email-modal');
-    alert('Email envoyé !');
-  } catch(e) {
-    alert('Erreur envoi');
-  }
-}
-
-// Load emails if already connected
-const savedToken = localStorage.getItem('aria_google_token');
-if(savedToken) {
-  state.googleToken = savedToken;
-  document.getElementById('gmail-connect').style.display = 'none';
-}
-
-// INIT
-updateTime();
-setInterval(updateTime, 30000);
-checkApiKey();
-updateHomeStats();
-</script>
-
-<div class="modal-overlay" id="email-modal">
+<!-- Email View Modal -->
+<div class="overlay" id="email-view-modal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h3>📧 Email</h3>
-    <div class="form-group">
-      <label class="form-label">De</label>
-      <div id="email-from" style="font-size:13px;color:var(--accent);padding:8px 0"></div>
+    <h3 id="ev-subject" style="font-size:16px;margin-bottom:6px">Sujet</h3>
+    <div id="ev-from" style="font-size:13px;color:var(--accent);margin-bottom:14px"></div>
+    <div id="ev-body" style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:16px"></div>
+    <div id="ev-ai-summary" style="background:rgba(124,108,255,.08);border:1px solid rgba(124,108,255,.2);border-radius:var(--rs);padding:12px;margin-bottom:14px;display:none">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:6px">Résumé ARIA</div>
+      <div id="ev-summary-text" style="font-size:13px;color:var(--text2);line-height:1.5"></div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Sujet</label>
-      <div id="email-subject" style="font-size:14px;font-weight:700;padding:8px 0"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" onclick="replyEmail()">↩ Répondre</button>
+      <button class="btn btn-ghost btn-sm" onclick="summarizeEmail()">🤖 Résumer</button>
+      <button class="btn btn-ghost btn-sm" onclick="createTaskFromEmail()">✅ Créer tâche</button>
     </div>
-    <div class="form-group">
-      <label class="form-label">Message</label>
-      <div id="email-body" style="font-size:13px;color:var(--text2);line-height:1.5;padding:8px 0"></div>
-    </div>
-    <button class="modal-btn" onclick="closeModal('email-modal');document.getElementById('send-email-modal').classList.add('open')">↩ Répondre</button>
-    <button class="modal-btn" style="background:var(--bg3);margin-top:8px" onclick="closeModal('email-modal')">Fermer</button>
+    <button class="modal-btn ghost" onclick="closeModal('email-view-modal')" style="margin-top:12px">Fermer</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="send-email-modal">
+<!-- Send Email Modal -->
+<div class="overlay" id="send-modal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h3>✉️ Envoyer Email</h3>
+    <h3>✉️ Rédiger un Email</h3>
     <div class="form-group">
       <label class="form-label">À</label>
-      <input type="email" class="form-input" id="send-to" placeholder="email@exemple.com">
+      <input type="email" class="form-input" id="send-to" placeholder="destinataire@email.com">
     </div>
     <div class="form-group">
       <label class="form-label">Sujet</label>
@@ -1436,12 +590,735 @@ updateHomeStats();
     </div>
     <div class="form-group">
       <label class="form-label">Message</label>
-      <textarea class="form-input" id="send-body" placeholder="Votre message..."></textarea>
+      <textarea class="form-input" id="send-body" placeholder="Votre message..." style="min-height:100px"></textarea>
     </div>
+    <button class="btn btn-ghost btn-sm" onclick="aiDraftEmail()" style="margin-bottom:10px;width:100%;justify-content:center">🤖 ARIA rédige pour moi</button>
     <button class="modal-btn" onclick="sendEmail()">Envoyer</button>
-    <button class="modal-btn" style="background:var(--bg3);margin-top:8px" onclick="closeModal('send-email-modal')">Annuler</button>
+    <button class="modal-btn ghost" onclick="closeModal('send-modal')" style="margin-top:8px">Annuler</button>
   </div>
 </div>
 
+<script>
+// ============ STATE ============
+const ST = {
+  tasks: JSON.parse(localStorage.getItem('aria_tasks')||'[]'),
+  notes: JSON.parse(localStorage.getItem('aria_notes')||'[]'),
+  events: JSON.parse(localStorage.getItem('aria_events')||'[]'),
+  apiKey: localStorage.getItem('aria_api_key')||'',
+  gToken: localStorage.getItem('aria_gtoken')||'',
+  messages: [],
+  priority: 'urgent',
+  calY: 2026, calM: 3,
+  emails: [],
+  currentEmail: null,
+  emailFilter: 'all'
+};
+
+// ============ NAVIGATION ============
+function nav(screen) {
+  document.querySelectorAll('.screen,.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('s-'+screen).classList.add('active');
+  document.getElementById('nav-'+screen).classList.add('active');
+  if(screen==='agenda') renderCal();
+  if(screen==='tasks') renderTasks();
+  if(screen==='notes') renderNotes();
+  if(screen==='email') { if(ST.gToken) loadEmails(); else checkGoogleToken(); }
+  if(screen==='home') updateHome();
+}
+
+// ============ TIME & DATE ============
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2,'0');
+  const m = now.getMinutes().toString().padStart(2,'0');
+  const el = document.getElementById('hero-clock');
+  if(el) el.textContent = h+':'+m;
+  const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const dateEl = document.getElementById('hero-date');
+  if(dateEl) dateEl.textContent = days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+}
+
+// ============ HOME ============
+function updateHome() {
+  const pending = ST.tasks.filter(t=>!t.done);
+  const urgent = ST.tasks.filter(t=>!t.done&&t.priority==='urgent');
+  document.getElementById('stat-t').textContent = pending.length;
+  document.getElementById('stat-u').textContent = urgent.length;
+  document.getElementById('stat-n').textContent = ST.notes.length;
+  document.getElementById('stat-e').textContent = ST.events.length;
+  document.getElementById('qs-tasks').textContent = pending.length+' en cours';
+  document.getElementById('qs-events').textContent = ST.events.length+' événements';
+  generateBrief();
+}
+
+async function generateBrief() {
+  if(!ST.apiKey) {
+    document.getElementById('hero-brief-text').textContent = 'Configurez votre clé API dans l\'onglet ARIA pour activer le brief quotidien.';
+    return;
+  }
+  const pending = ST.tasks.filter(t=>!t.done);
+  const urgent = ST.tasks.filter(t=>!t.done&&t.priority==='urgent');
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
+  const todayEvents = ST.events.filter(e=>e.date===todayStr);
+  const briefEl = document.getElementById('hero-brief-text');
+  briefEl.textContent = 'Génération du brief...';
+  try {
+    const prompt = `Génère un brief quotidien TRÈS court (max 3 lignes) pour cet utilisateur en français. 
+Données: ${pending.length} tâches en attente, ${urgent.length} urgentes, ${todayEvents.length} événements aujourd'hui, ${ST.notes.length} notes.
+Événements aujourd'hui: ${todayEvents.map(e=>e.title+' à '+e.time).join(', ')||'aucun'}.
+Tâches urgentes: ${urgent.slice(0,3).map(t=>t.title).join(', ')||'aucune'}.
+Sois concis, utile et motivant.`;
+    const res = await fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}],apiKey:ST.apiKey})});
+    const data = await res.json();
+    if(data.content&&data.content[0]) briefEl.textContent = data.content[0].text;
+  } catch(e) {
+    briefEl.textContent = `${pending.length} tâches en attente • ${urgent.length} urgentes • ${todayEvents.length} événements aujourd'hui`;
+  }
+}
+
+// ============ CHAT ============
+function saveKey() {
+  const k = document.getElementById('api-key-input').value.trim();
+  if(k) {
+    ST.apiKey = k;
+    localStorage.setItem('aria_api_key',k);
+    document.getElementById('api-setup-banner').style.display='none';
+    addMsg('aria','✅ Clé API activée ! ARIA est maintenant opérationnelle.\n\nJe peux maintenant :\n• Gérer vos emails Gmail\n• Organiser vos tâches\n• Gérer votre agenda\n• Prendre des notes\n• Et bien plus encore !');
+  }
+}
+
+function addMsg(role, content, actions) {
+  const container = document.getElementById('chat-msgs');
+  const div = document.createElement('div');
+  div.className = 'msg '+role;
+  const now = new Date();
+  const time = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  let actionsHtml = '';
+  if(actions&&actions.length) {
+    actionsHtml = '<div class="msg-actions">'+actions.map(a=>`<div class="msg-action-btn" onclick="quickCmd('${a.cmd}')">${a.label}</div>`).join('')+'</div>';
+  }
+  div.innerHTML = `<div class="msg-bubble">${content.replace(/\n/g,'<br>')}</div><div class="msg-time">${time}</div>${actionsHtml}`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  ST.messages.push({role:role==='user'?'user':'assistant',content});
+}
+
+function showTyping() {
+  const container = document.getElementById('chat-msgs');
+  const div = document.createElement('div');
+  div.className = 'msg aria';
+  div.id = 'typing';
+  div.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if(t) t.remove();
+}
+
+async function sendMsg() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  input.style.height = 'auto';
+  addMsg('user', msg);
+  await processMessage(msg);
+}
+
+async function processMessage(msg) {
+  if(!ST.apiKey) {
+    addMsg('aria','⚠️ Veuillez d\'abord configurer votre clé API Claude pour activer ARIA.');
+    return;
+  }
+  showTyping();
+
+  // Check for local actions first
+  const lower = msg.toLowerCase();
+
+  // CREATE TASK
+  if(lower.includes('crée') && (lower.includes('tâche')||lower.includes('task'))) {
+    removeTyping();
+    openModal('task-modal');
+    addMsg('aria','✅ J\'ouvre le formulaire de création de tâche. Remplissez les détails !');
+    return;
+  }
+
+  // CREATE NOTE
+  if(lower.includes('note') && (lower.includes('crée')||lower.includes('prends')||lower.includes('écris'))) {
+    removeTyping();
+    openModal('note-modal');
+    addMsg('aria','📝 J\'ouvre le formulaire de note. Écrivez votre note !');
+    return;
+  }
+
+  // CREATE EVENT
+  if(lower.includes('réunion')||lower.includes('rendez-vous')||(lower.includes('ajoute')&&lower.includes('événement'))) {
+    removeTyping();
+    openModal('event-modal');
+    addMsg('aria','📅 J\'ouvre l\'agenda pour créer un événement !');
+    return;
+  }
+
+  // SHOW TASKS
+  if(lower.includes('mes tâches')||lower.includes('tâches du jour')||lower.includes('tâches urgentes')) {
+    removeTyping();
+    const urgent = ST.tasks.filter(t=>!t.done&&t.priority==='urgent');
+    const normal = ST.tasks.filter(t=>!t.done&&t.priority!=='urgent');
+    let response = `📋 **Vos tâches :**\n\n`;
+    if(urgent.length) {
+      response += `🔴 **Urgentes (${urgent.length}) :**\n`;
+      urgent.forEach(t=>response+=`• ${t.title}${t.date?' ('+t.date+')':''}\n`);
+    }
+    if(normal.length) {
+      response += `\n🔵 **En cours (${normal.length}) :**\n`;
+      normal.slice(0,5).forEach(t=>response+=`• ${t.title}\n`);
+    }
+    if(!urgent.length&&!normal.length) response = '✅ Aucune tâche en attente. Excellent travail !';
+    addMsg('aria', response, [{label:'+ Ajouter tâche',cmd:'Crée une tâche'}]);
+    nav('tasks');
+    return;
+  }
+
+  // SHOW EMAILS
+  if(lower.includes('email')||lower.includes('mail')) {
+    removeTyping();
+    if(!ST.gToken) {
+      addMsg('aria','📧 Gmail n\'est pas encore connecté. Connectez votre compte Google pour accéder à vos emails.', [{label:'🔗 Connecter Gmail',cmd:'Connecter Gmail'}]);
+    } else {
+      addMsg('aria','📧 Je charge vos emails...');
+      nav('email');
+      loadEmails();
+    }
+    return;
+  }
+
+  // CONNECT GMAIL
+  if(lower.includes('connecter gmail')||lower.includes('connect gmail')) {
+    removeTyping();
+    connectGoogle();
+    addMsg('aria','🔗 Ouverture de la connexion Google...');
+    return;
+  }
+
+  // SHOW AGENDA
+  if(lower.includes('agenda')||lower.includes('planning')||lower.includes('calendrier')) {
+    removeTyping();
+    const today = new Date().toISOString().split('T')[0];
+    const upcoming = ST.events.filter(e=>e.date>=today).slice(0,5);
+    let response = `📅 **Votre agenda :**\n\n`;
+    if(upcoming.length) {
+      upcoming.forEach(e=>response+=`• ${e.title} — ${e.date}${e.time?' à '+e.time:''}\n`);
+    } else {
+      response = '📅 Aucun événement à venir. Votre agenda est libre !';
+    }
+    addMsg('aria', response, [{label:'+ Événement',cmd:'Ajouter un événement'}]);
+    nav('agenda');
+    return;
+  }
+
+  // BRIEF
+  if(lower.includes('brief')||lower.includes('journée')||lower.includes('résumé du jour')) {
+    removeTyping();
+    const pending = ST.tasks.filter(t=>!t.done);
+    const urgent = ST.tasks.filter(t=>!t.done&&t.priority==='urgent');
+    const today = new Date().toISOString().split('T')[0];
+    const todayEvents = ST.events.filter(e=>e.date===today);
+    let brief = `⚡ **Brief du jour :**\n\n`;
+    brief += `📧 Emails : ${ST.emails.length||0} dans la boite\n`;
+    brief += `✅ Tâches : ${pending.length} en attente, ${urgent.length} urgentes\n`;
+    brief += `📅 Aujourd'hui : ${todayEvents.length} événement(s)\n`;
+    brief += `📝 Notes : ${ST.notes.length} au total\n\n`;
+    if(urgent.length) {
+      brief += `🔴 **À traiter en priorité :**\n`;
+      urgent.slice(0,3).forEach(t=>brief+=`• ${t.title}\n`);
+    }
+    if(todayEvents.length) {
+      brief += `\n📅 **Événements du jour :**\n`;
+      todayEvents.forEach(e=>brief+=`• ${e.title}${e.time?' à '+e.time:''}\n`);
+    }
+    addMsg('aria', brief);
+    return;
+  }
+
+  // AI RESPONSE
+  try {
+    const systemPrompt = `Tu es ARIA, une assistante IA personnelle haut de gamme en français. Tu es intelligente, proactive, concise et utile.
+
+Contexte utilisateur:
+- Tâches en cours: ${ST.tasks.filter(t=>!t.done).length} (dont ${ST.tasks.filter(t=>!t.done&&t.priority==='urgent').length} urgentes)
+- Notes: ${ST.notes.length}
+- Événements: ${ST.events.length}
+- Gmail connecté: ${ST.gToken?'Oui':'Non'}
+
+Tu peux aider avec: emails, tâches, agenda, notes, organisation, recherche d'infos, rédaction, analyse.
+Réponds toujours en français, de façon concise et utile. Max 200 mots sauf si l'utilisateur demande plus.`;
+
+    const res = await fetch('/.netlify/functions/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        messages:[...ST.messages.slice(-8),{role:'user',content:msg}],
+        apiKey:ST.apiKey,
+        system:systemPrompt
+      })
+    });
+    removeTyping();
+    if(res.ok) {
+      const data = await res.json();
+      const reply = data.content[0].text;
+      addMsg('aria', reply);
+    } else {
+      addMsg('aria','❌ Erreur de connexion. Vérifiez votre clé API.');
+    }
+  } catch(e) {
+    removeTyping();
+    addMsg('aria','❌ Erreur réseau. Vérifiez votre connexion.');
+  }
+}
+
+function quickCmd(cmd) {
+  const input = document.getElementById('chat-input');
+  input.value = cmd;
+  nav('chat');
+  sendMsg();
+}
+
+function handleKey(e) {
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}
+}
+
+function autoResize(el) {
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,90)+'px';
+}
+
+function clearChat() {
+  ST.messages = [];
+  document.getElementById('chat-msgs').innerHTML='';
+  addMsg('aria','Chat effacé. Comment puis-je vous aider ?');
+}
+
+// VOICE
+function startVoice() {
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)) {
+    alert('Reconnaissance vocale non supportée sur ce navigateur.');
+    return;
+  }
+  const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+  const recognition = new SR();
+  recognition.lang = 'fr-FR';
+  recognition.onstart = () => document.getElementById('voice-btn').textContent = '🔴';
+  recognition.onend = () => document.getElementById('voice-btn').textContent = '🎤';
+  recognition.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    document.getElementById('chat-input').value = transcript;
+    sendMsg();
+  };
+  recognition.start();
+}
+
+// ============ EMAILS ============
+function connectGoogle() {
+  window.open('/.netlify/functions/google-auth','_blank','width=500,height=600');
+  const check = setInterval(()=>{
+    const token = localStorage.getItem('aria_gtoken');
+    if(token) {
+      clearInterval(check);
+      ST.gToken = token;
+      document.getElementById('gmail-connect-banner').style.display='none';
+      loadEmails();
+    }
+  },2000);
+}
+
+function checkGoogleToken() {
+  const token = localStorage.getItem('aria_gtoken');
+  if(token) {
+    ST.gToken = token;
+    document.getElementById('gmail-connect-banner').style.display='none';
+    loadEmails();
+  }
+}
+
+async function loadEmails() {
+  if(!ST.gToken) return;
+  document.getElementById('gmail-connect-banner').style.display='none';
+  const container = document.getElementById('emails-container');
+  container.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Chargement des emails...</p></div>';
+  try {
+    const res = await fetch('/.netlify/functions/gmail',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({token:ST.gToken,action:'list'})
+    });
+    const data = await res.json();
+    if(data.emails&&data.emails.length) {
+      ST.emails = data.emails;
+      updateEmailBadge(data.emails.length);
+      renderEmails(data.emails);
+    } else {
+      container.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Aucun email non lu</p></div>';
+    }
+  } catch(e) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">❌</div><p>Erreur de chargement</p></div>';
+  }
+}
+
+function renderEmails(emails) {
+  const container = document.getElementById('emails-container');
+  if(!emails.length) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Aucun email</p></div>';
+    return;
+  }
+  let filtered = emails;
+  if(ST.emailFilter==='urgent') filtered = emails.filter(e=>isUrgent(e));
+  container.innerHTML = filtered.map((e,i)=>`
+    <div class="email-item unread" onclick="viewEmail(${i})">
+      <div class="email-avatar">${getInitial(e.from)}</div>
+      <div class="email-content">
+        <div class="email-from">${formatFrom(e.from)}</div>
+        <div class="email-subject">${e.subject||'Sans sujet'}</div>
+        <div class="email-preview">${e.snippet||''}</div>
+      </div>
+      <div class="email-meta">
+        <div class="email-time">${formatEmailDate(e.date)}</div>
+        ${isUrgent(e)?'<div class="urgent-badge">URGENT</div>':''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function getInitial(from) {
+  return from ? from.charAt(0).toUpperCase() : '?';
+}
+
+function formatFrom(from) {
+  const match = from.match(/^([^<]+)/);
+  return match ? match[1].trim().replace(/"/g,'') : from;
+}
+
+function formatEmailDate(dateStr) {
+  if(!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'});
+  } catch(e) { return ''; }
+}
+
+function isUrgent(email) {
+  const urgentWords = ['urgent','important','asap','immédiat','critique','deadline'];
+  const text = ((email.subject||'')+(email.snippet||'')).toLowerCase();
+  return urgentWords.some(w=>text.includes(w));
+}
+
+function updateEmailBadge(count) {
+  const badge = document.getElementById('email-badge');
+  const navBadge = document.getElementById('qn-email');
+  if(count>0) {
+    badge.textContent = count;
+    badge.style.display = 'block';
+    navBadge.textContent = count;
+    navBadge.style.display = 'block';
+    document.getElementById('qs-email').textContent = count+' non lus';
+  }
+}
+
+function filterEmails(filter, el) {
+  ST.emailFilter = filter;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderEmails(ST.emails);
+}
+
+function viewEmail(index) {
+  ST.currentEmail = ST.emails[index];
+  document.getElementById('ev-subject').textContent = ST.currentEmail.subject||'Sans sujet';
+  document.getElementById('ev-from').textContent = 'De : '+ST.currentEmail.from;
+  document.getElementById('ev-body').textContent = ST.currentEmail.snippet||'';
+  document.getElementById('ev-ai-summary').style.display='none';
+  openModal('email-view-modal');
+}
+
+async function summarizeEmail() {
+  if(!ST.currentEmail||!ST.apiKey) return;
+  const summaryDiv = document.getElementById('ev-ai-summary');
+  const summaryText = document.getElementById('ev-summary-text');
+  summaryDiv.style.display='block';
+  summaryText.textContent = 'ARIA analyse l\'email...';
+  try {
+    const res = await fetch('/.netlify/functions/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        messages:[{role:'user',content:`Résume cet email en 2-3 points clés en français:\nDe: ${ST.currentEmail.from}\nSujet: ${ST.currentEmail.subject}\nContenu: ${ST.currentEmail.snippet}`}],
+        apiKey:ST.apiKey
+      })
+    });
+    const data = await res.json();
+    summaryText.textContent = data.content[0].text;
+  } catch(e) {
+    summaryText.textContent = 'Erreur de résumé.';
+  }
+}
+
+function replyEmail() {
+  if(!ST.currentEmail) return;
+  closeModal('email-view-modal');
+  document.getElementById('send-to').value = ST.currentEmail.from.match(/<(.+)>/)?.[1]||ST.currentEmail.from;
+  document.getElementById('send-subject').value = 'Re: '+(ST.currentEmail.subject||'');
+  openModal('send-modal');
+}
+
+function createTaskFromEmail() {
+  if(!ST.currentEmail) return;
+  closeModal('email-view-modal');
+  document.getElementById('task-title').value = 'Répondre: '+(ST.currentEmail.subject||'email');
+  openModal('task-modal');
+}
+
+async function aiDraftEmail() {
+  if(!ST.apiKey) return;
+  const to = document.getElementById('send-to').value;
+  const subject = document.getElementById('send-subject').value;
+  const bodyEl = document.getElementById('send-body');
+  bodyEl.value = 'ARIA rédige...';
+  try {
+    const res = await fetch('/.netlify/functions/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        messages:[{role:'user',content:`Rédige un email professionnel en français.\nDestinataire: ${to||'le destinataire'}\nSujet: ${subject||'sans sujet'}\nTon: professionnel et cordial\nLongueur: courte et efficace`}],
+        apiKey:ST.apiKey
+      })
+    });
+    const data = await res.json();
+    bodyEl.value = data.content[0].text;
+  } catch(e) {
+    bodyEl.value = '';
+  }
+}
+
+async function sendEmail() {
+  const to = document.getElementById('send-to').value;
+  const subject = document.getElementById('send-subject').value;
+  const body = document.getElementById('send-body').value;
+  if(!to||!subject||!body) { alert('Remplissez tous les champs.'); return; }
+  if(!ST.gToken) { alert('Gmail non connecté.'); return; }
+  try {
+    const res = await fetch('/.netlify/functions/gmail',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({token:ST.gToken,action:'send',to,subject,body})
+    });
+    if(res.ok) {
+      closeModal('send-modal');
+      addMsg('aria','✅ Email envoyé avec succès à '+to+' !');
+      nav('chat');
+    } else {
+      alert('Erreur envoi email.');
+    }
+  } catch(e) {
+    alert('Erreur réseau.');
+  }
+}
+
+// ============ TASKS ============
+function selPriority(p) {
+  ST.priority = p;
+  document.querySelectorAll('.p-opt').forEach(el=>{el.classList.remove('sel');});
+  document.querySelector('.p-opt.'+p).classList.add('sel');
+}
+
+function addTask() {
+  const title = document.getElementById('task-title').value.trim();
+  if(!title) return;
+  ST.tasks.unshift({id:Date.now(),title,date:document.getElementById('task-date').value,priority:ST.priority,done:false});
+  save();
+  renderTasks();
+  closeModal('task-modal');
+  document.getElementById('task-title').value='';
+}
+
+function toggleTask(id) {
+  const t = ST.tasks.find(t=>t.id===id);
+  if(t){t.done=!t.done;save();renderTasks();}
+}
+
+function deleteTask(id,e) {
+  e.stopPropagation();
+  ST.tasks = ST.tasks.filter(t=>t.id!==id);
+  save();
+  renderTasks();
+}
+
+function renderTasks() {
+  const list = document.getElementById('tasks-list');
+  if(!ST.tasks.length) {
+    list.innerHTML='<div class="empty"><div class="empty-icon">✅</div><p>Aucune tâche.<br>Créez votre première tâche !</p></div>';
+    return;
+  }
+  const sorted = [...ST.tasks].sort((a,b)=>{
+    if(a.done!==b.done) return a.done?1:-1;
+    const p={urgent:0,normal:1,low:2};
+    return (p[a.priority]||1)-(p[b.priority]||1);
+  });
+  list.innerHTML = sorted.map(t=>`
+    <div class="task-item">
+      <div class="task-check ${t.done?'done':''}" onclick="toggleTask(${t.id})">
+        ${t.done?'<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>':''}
+      </div>
+      <div class="task-content">
+        <div class="task-title ${t.done?'done':''}">${t.title}</div>
+        <div class="task-meta">
+          <span class="priority ${t.priority}">${t.priority==='urgent'?'🔴 Urgent':t.priority==='normal'?'🔵 Normal':'🟢 Bas'}</span>
+          ${t.date?`<span class="task-date">📅 ${t.date}</span>`:''}
+        </div>
+      </div>
+      <div class="task-del" onclick="deleteTask(${t.id},event)">🗑</div>
+    </div>
+  `).join('');
+  updateHome();
+}
+
+// ============ NOTES ============
+function addNote() {
+  const title = document.getElementById('note-title').value.trim();
+  const content = document.getElementById('note-content').value.trim();
+  if(!title) return;
+  ST.notes.unshift({id:Date.now(),title,content,tag:document.getElementById('note-tag').value.trim()||'Note',date:new Date().toLocaleDateString('fr-FR')});
+  save();
+  renderNotes();
+  closeModal('note-modal');
+  document.getElementById('note-title').value='';
+  document.getElementById('note-content').value='';
+  document.getElementById('note-tag').value='';
+}
+
+function deleteNote(id,e) {
+  e.stopPropagation();
+  ST.notes = ST.notes.filter(n=>n.id!==id);
+  save();
+  renderNotes();
+}
+
+function renderNotes() {
+  const grid = document.getElementById('notes-grid');
+  if(!ST.notes.length) {
+    grid.innerHTML='<div class="empty" style="grid-column:span 2"><div class="empty-icon">📝</div><p>Aucune note.<br>Créez votre première note !</p></div>';
+    return;
+  }
+  grid.innerHTML = ST.notes.map(n=>`
+    <div class="note-card">
+      <span class="note-tag">${n.tag}</span>
+      <div class="note-title">${n.title}</div>
+      <div class="note-preview">${n.content}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px">
+        <div class="note-date">${n.date}</div>
+        <div onclick="deleteNote(${n.id},event)" style="color:var(--text3);cursor:pointer;font-size:14px">🗑</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============ CALENDAR ============
+const MONTHS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const DAYS=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+
+function renderCal() {
+  document.getElementById('cal-title').textContent = MONTHS[ST.calM]+' '+ST.calY;
+  document.getElementById('cal-names').innerHTML = DAYS.map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+  const first = new Date(ST.calY,ST.calM,1).getDay();
+  const total = new Date(ST.calY,ST.calM+1,0).getDate();
+  const today = new Date();
+  let html = '';
+  for(let i=0;i<first;i++) {
+    const d = new Date(ST.calY,ST.calM,-first+i+1).getDate();
+    html+=`<div class="cal-day other">${d}</div>`;
+  }
+  for(let d=1;d<=total;d++) {
+    const dateStr = ST.calY+'-'+(ST.calM+1).toString().padStart(2,'0')+'-'+d.toString().padStart(2,'0');
+    const isToday = d===today.getDate()&&ST.calM===today.getMonth()&&ST.calY===today.getFullYear();
+    const hasEv = ST.events.some(e=>e.date===dateStr);
+    html+=`<div class="cal-day ${isToday?'today':''} ${hasEv?'has-ev':''}">${d}</div>`;
+  }
+  document.getElementById('cal-days').innerHTML = html;
+  renderEvents();
+}
+
+function prevMonth(){if(ST.calM===0){ST.calM=11;ST.calY--;}else ST.calM--;renderCal();}
+function nextMonth(){if(ST.calM===11){ST.calM=0;ST.calY++;}else ST.calM++;renderCal();}
+
+function addEvent() {
+  const title = document.getElementById('event-title').value.trim();
+  if(!title) return;
+  ST.events.unshift({id:Date.now(),title,date:document.getElementById('event-date').value,time:document.getElementById('event-time').value,desc:document.getElementById('event-desc').value.trim()});
+  save();
+  renderCal();
+  closeModal('event-modal');
+  document.getElementById('event-title').value='';
+}
+
+function renderEvents() {
+  const list = document.getElementById('events-list');
+  const today = new Date().toISOString().split('T')[0];
+  const upcoming = ST.events.filter(e=>e.date>=today).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  if(!upcoming.length){
+    list.innerHTML='<div class="empty"><div class="empty-icon">📅</div><p>Aucun événement à venir</p></div>';
+    return;
+  }
+  list.innerHTML = upcoming.map(e=>{
+    const [h,m] = (e.time||'00:00').split(':');
+    const ampm = parseInt(h)>=12?'PM':'AM';
+    const h12 = parseInt(h)%12||12;
+    return `<div class="event-item">
+      <div class="event-time-col">
+        <div class="event-time">${h12}:${m||'00'}</div>
+        <div class="event-ampm">${ampm}</div>
+      </div>
+      <div class="event-bar"></div>
+      <div style="flex:1">
+        <div class="event-title">${e.title}</div>
+        <div class="event-desc">${e.date}${e.desc?' • '+e.desc:''}</div>
+      </div>
+      <div onclick="deleteEvent(${e.id})" style="color:var(--text3);cursor:pointer;font-size:16px;padding:4px">🗑</div>
+    </div>`;
+  }).join('');
+}
+
+function deleteEvent(id) {
+  ST.events = ST.events.filter(e=>e.id!==id);
+  save();
+  renderCal();
+}
+
+// ============ MODALS ============
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});
+});
+
+// ============ SAVE ============
+function save() {
+  localStorage.setItem('aria_tasks',JSON.stringify(ST.tasks));
+  localStorage.setItem('aria_notes',JSON.stringify(ST.notes));
+  localStorage.setItem('aria_events',JSON.stringify(ST.events));
+  updateHome();
+}
+
+// ============ INIT ============
+updateClock();
+setInterval(updateClock,30000);
+if(ST.apiKey) document.getElementById('api-setup-banner').style.display='none';
+if(ST.gToken) document.getElementById('gmail-connect-banner').style.display='none';
+updateHome();
+renderTasks();
+renderNotes();
+</script>
 </body>
 </html>
