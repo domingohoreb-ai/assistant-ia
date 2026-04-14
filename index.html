@@ -774,6 +774,30 @@
   </div>
 </div>
 
+
+<!-- GMAIL -->
+<div class="screen" id="screen-gmail">
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="greeting">Messagerie</div>
+        <h2>Gmail</h2>
+      </div>
+      <button class="add-btn" onclick="connectGoogle()" id="google-connect-btn">🔗 Connecter</button>
+    </div>
+  </div>
+  <div class="scroll-area">
+    <div id="gmail-status" class="api-config" style="display:none">
+      <p>✅ Gmail connecté ! Chargement des emails...</p>
+    </div>
+    <div id="gmail-connect" class="api-config">
+      <p>📧 Connectez votre Gmail pour lire et envoyer des emails avec l'IA</p>
+      <button class="modal-btn" onclick="connectGoogle()">🔗 Connecter Gmail + Calendar</button>
+    </div>
+    <div id="emails-list" style="padding:0 16px"></div>
+  </div>
+</div>
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <div class="nav-item active" id="nav-home" onclick="goTo('home')">
@@ -811,6 +835,13 @@
       <line x1="3" y1="10" x2="21" y2="10"></line>
     </svg>
     Agenda
+  </div>
+  <div class="nav-item" id="nav-gmail" onclick="goTo('gmail')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+      <polyline points="22,6 12,12 2,6"></polyline>
+    </svg>
+    Gmail
   </div>
 </nav>
 
@@ -906,6 +937,7 @@ function goTo(screen) {
   document.getElementById('screen-' + screen).classList.add('active');
   document.getElementById('nav-' + screen).classList.add('active');
   if(screen === 'agenda') renderCalendar();
+  if(screen === 'gmail') { const t = localStorage.getItem('aria_google_token'); if(t) loadEmails(); }
   if(screen === 'tasks') renderTasks();
   if(screen === 'notes') renderNotes();
   if(screen === 'home') updateHomeStats();
@@ -1277,11 +1309,139 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
 });
 
+
+// GOOGLE AUTH
+function connectGoogle() {
+  window.open('/.netlify/functions/google-auth', '_blank', 'width=500,height=600');
+  // Check for token every 2 seconds
+  const check = setInterval(() => {
+    const token = localStorage.getItem('aria_google_token');
+    if(token) {
+      clearInterval(check);
+      state.googleToken = token;
+      loadEmails();
+      document.getElementById('gmail-connect').style.display = 'none';
+      document.getElementById('gmail-status').style.display = 'block';
+    }
+  }, 2000);
+}
+
+// LOAD EMAILS
+async function loadEmails() {
+  const token = localStorage.getItem('aria_google_token');
+  if(!token) return;
+  
+  const list = document.getElementById('emails-list');
+  list.innerHTML = '<div class="empty-state"><p>Chargement des emails...</p></div>';
+  
+  try {
+    const res = await fetch('/.netlify/functions/gmail', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, action: 'list' })
+    });
+    const data = await res.json();
+    
+    if(!data.emails || !data.emails.length) {
+      list.innerHTML = '<div class="empty-state"><div class="icon">📧</div><p>Aucun email non lu</p></div>';
+      return;
+    }
+    
+    list.innerHTML = data.emails.map(e => `
+      <div class="card" style="margin-bottom:10px;cursor:pointer" onclick="showEmailDetail('${e.id}','${e.from.replace(/'/g,"\'")}','${e.subject.replace(/'/g,"\'")}','${e.snippet.replace(/'/g,"\'")}')">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:4px;color:var(--text)">${e.subject || 'Sans sujet'}</div>
+        <div style="font-size:12px;color:var(--accent);margin-bottom:6px">${e.from}</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.4">${e.snippet}</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="empty-state"><p>Erreur de chargement</p></div>';
+  }
+}
+
+function showEmailDetail(id, from, subject, snippet) {
+  document.getElementById('email-from').textContent = from;
+  document.getElementById('email-subject').textContent = subject;
+  document.getElementById('email-body').textContent = snippet;
+  document.getElementById('email-modal').classList.add('open');
+}
+
+async function sendEmail() {
+  const token = localStorage.getItem('aria_google_token');
+  const to = document.getElementById('send-to').value;
+  const subject = document.getElementById('send-subject').value;
+  const body = document.getElementById('send-body').value;
+  
+  if(!to || !subject || !body) { alert('Remplissez tous les champs'); return; }
+  
+  try {
+    await fetch('/.netlify/functions/gmail', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, action: 'send', to, subject, body })
+    });
+    closeModal('send-email-modal');
+    alert('Email envoyé !');
+  } catch(e) {
+    alert('Erreur envoi');
+  }
+}
+
+// Load emails if already connected
+const savedToken = localStorage.getItem('aria_google_token');
+if(savedToken) {
+  state.googleToken = savedToken;
+  document.getElementById('gmail-connect').style.display = 'none';
+}
+
 // INIT
 updateTime();
 setInterval(updateTime, 30000);
 checkApiKey();
 updateHomeStats();
 </script>
+
+<div class="modal-overlay" id="email-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>📧 Email</h3>
+    <div class="form-group">
+      <label class="form-label">De</label>
+      <div id="email-from" style="font-size:13px;color:var(--accent);padding:8px 0"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sujet</label>
+      <div id="email-subject" style="font-size:14px;font-weight:700;padding:8px 0"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Message</label>
+      <div id="email-body" style="font-size:13px;color:var(--text2);line-height:1.5;padding:8px 0"></div>
+    </div>
+    <button class="modal-btn" onclick="closeModal('email-modal');document.getElementById('send-email-modal').classList.add('open')">↩ Répondre</button>
+    <button class="modal-btn" style="background:var(--bg3);margin-top:8px" onclick="closeModal('email-modal')">Fermer</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="send-email-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>✉️ Envoyer Email</h3>
+    <div class="form-group">
+      <label class="form-label">À</label>
+      <input type="email" class="form-input" id="send-to" placeholder="email@exemple.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sujet</label>
+      <input type="text" class="form-input" id="send-subject" placeholder="Sujet de l'email">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Message</label>
+      <textarea class="form-input" id="send-body" placeholder="Votre message..."></textarea>
+    </div>
+    <button class="modal-btn" onclick="sendEmail()">Envoyer</button>
+    <button class="modal-btn" style="background:var(--bg3);margin-top:8px" onclick="closeModal('send-email-modal')">Annuler</button>
+  </div>
+</div>
+
 </body>
 </html>
